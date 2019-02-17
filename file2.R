@@ -177,6 +177,7 @@ students3=read.csv('fms.csv')
 head(students3)
 #to find details of students who scored>1 marks
 library(dplyr)
+#for running a package use library(package no.)
 students[students$marks1>60,]
 students[students$gender=='F',]
 students[students$gender=='F' |students$college=='SRCC',]
@@ -186,3 +187,35 @@ students%>% filter(gender=='M'& marks1>60)
 students%>%group_by(gender)%>%summarise(mean(marks1),mean(marks2))
 students%>%group_by(college)%>%summarise(max(marks1),max(marks2))
 students%>%filter(college=='FMS')%>%select(marks1,marks2)
+# %>% is a pipe (used for filtering data)
+
+library(dplyr)
+students
+#Query: Compare the performance of IIM, FMS and SRCC
+students[students$gender=='F'|students$college=='SRCC',]
+students[students$gender=='F'& students$college=='SRCC',]
+students%>%filter(gender=='M' & marks1>60)
+#all students with gender =M and marks1> 60
+#%>% works only after using dplyr
+students%>%group_by(gender)%>%summarise(max(marks1),max(marks2))
+students%>%group_by(gender,college)%>%summarise(countTotal=n())
+students%>%filter(college=='FMS')%>%select(marks1,marks2)
+students%>%tally()
+students%>%group_by(gender,college)%>%summarise(countTotal=n(),mean(marks1),max(marks2))
+students%>%mutate(totalMarks=marks1+marks2)
+#mutate is a function - creates additional column and performs the action mentioned in the bracket)
+
+students%>%mutate(totalMarks=marks1+1.2*marks2)
+#here, marks2 are increased by 20%
+students%>%mutate(totalMarks=marks1+1.2*marks2)%>%arrange(-totalMarks)
+#arrange() is used to arrange the items in decreasing (use -)or increasing order
+students%>%mutate(totalMarks=marks1+1.2*marks2)%>%arrange(-totalMarks)%>%head(n=2)
+#in above line, we filtered by using pipe function and head(n=2)
+students%>%slice(1:5)
+students%>%slice(seq(1,30,2))#every alternate row (every 2nd row between elements 1 to 30)
+students%>%sample_n(5) #random 5 rows
+students%>%sample_frac(.2) #random 20%
+students%>%mutate(totalMarks=marks1+1.2*marks2)%>%filter(totalMarks==max(totalMarks))
+
+#import a file from excel and google sheets
+library(rjava)
